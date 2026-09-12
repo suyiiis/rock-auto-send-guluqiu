@@ -1,0 +1,37 @@
+# Local Python environments and dependencies
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+vendor/
+.cache/
+
+# Build products (keep release/*.py and the checked-in .spec)
+dist/
+build/
+.build-*/
+release/app/
+release/size_report.json
+release/removed_components.json
+*.exe
+*.dll
+*.pyd
+*.lib
+*.pdb
+*.zip
+*.7z
+
+# Runtime state and local diagnostics
+data/
+logs/
+validation/
+driver_pending.json
+*.log
+*.lock
+.env
+.env.*
+.vscode/
+.idea/
+Thumbs.db
+Desktop.ini

@@ -1,0 +1,15 @@
+{
+  "max_rounds": 0,
+  "poll_seconds": 0.25,
+  "stable_frames": 3,
+  "transition_timeout_seconds": 10.0,
+  "key_hold_seconds": 0.15,
+  "input_backend": "interception",
+  "interception": {
+    "keyboard_id": null,
+    "mouse_id": null,
+    "monitor_keyboard": false
+  },
+  "save_live_trace": false,
+  "gift_selection": "current"
+}

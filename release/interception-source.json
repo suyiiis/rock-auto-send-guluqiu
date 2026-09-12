@@ -1,0 +1,13 @@
+{
+  "project": "oblitum/Interception",
+  "version": "v1.0.1",
+  "url": "https://github.com/oblitum/Interception/releases/download/v1.0.1/Interception.zip",
+  "archive_sha256": "ad038963d6413055765128b0b931f6e765147c9916dba79e65d872b261f9af10",
+  "files": {
+    "Interception/command line installer/install-interception.exe": "e137863a79da797f08e7a137280ff2a123809044a888fd75ce9c973198915abe",
+    "Interception/licenses/commercial-usage/Interception API.pdf": "b6fbff2a6b20ba644632d13128589eac2a8886729f4aecf7724be4ccae17c2f9",
+    "Interception/licenses/commercial-usage/Interception.pdf": "f54331742d5d9bfed03822cb8a905b46960502048a1ac11e8060cc7fda7a7de9",
+    "Interception/licenses/non-commercial-usage/LGPL 3.0.txt": "da7eabb7bafdf7d3ae5e9f223aa5bdc1eece45ac569dc21b3b037520b4464768",
+    "Interception/library/x64/interception.dll": "ab88164c11b1b48488772d4c3bfaa4509d5b0ae9dbc5a691dc4f96f0260443c8"
+  }
+}

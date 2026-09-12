@@ -1,0 +1,216 @@
+{
+  "size": [
+    1920,
+    1080
+  ],
+  "states": {
+    "hud": [
+      {
+        "name": "health",
+        "file": "hud_health.png",
+        "rect": [
+          182,
+          45,
+          346,
+          76
+        ]
+      },
+      {
+        "name": "chat",
+        "file": "hud_chat.png",
+        "rect": [
+          97,
+          1032,
+          153,
+          1059
+        ]
+      }
+    ],
+    "closed": [
+      {
+        "name": "main_f3",
+        "file": "closed_main_f3.png",
+        "rect": [
+          1422,
+          46,
+          1467,
+          92
+        ]
+      },
+      {
+        "name": "main_f4",
+        "file": "closed_main_f4.png",
+        "rect": [
+          1506,
+          43,
+          1550,
+          89
+        ]
+      }
+    ],
+    "menu": [
+      {
+        "name": "esc",
+        "file": "menu_esc.png",
+        "rect": [
+          1745,
+          84,
+          1792,
+          111
+        ]
+      },
+      {
+        "name": "tab",
+        "file": "menu_tab.png",
+        "rect": [
+          1422,
+          468,
+          1472,
+          497
+        ]
+      }
+    ],
+    "prepare1": [
+      {
+        "name": "favorite",
+        "file": "prepare1_favorite.png",
+        "rect": [
+          1175,
+          417,
+          1240,
+          461
+        ]
+      }
+    ],
+    "prepare2": [
+      {
+        "name": "strength",
+        "file": "prepare2_strength.png",
+        "rect": [
+          1152,
+          180,
+          1241,
+          204
+        ]
+      },
+      {
+        "name": "gifting",
+        "file": "prepare2_gifting.png",
+        "rect": [
+          1265,
+          180,
+          1379,
+          204
+        ]
+      },
+      {
+        "name": "actions",
+        "file": "prepare2_actions.png",
+        "rect": [
+          1337,
+          417,
+          1398,
+          460
+        ]
+      },
+      {
+        "name": "f2",
+        "file": "prepare2_f2.png",
+        "rect": [
+          1302,
+          208,
+          1338,
+          233
+        ]
+      }
+    ],
+    "gift1": [
+      {
+        "name": "bag",
+        "file": "gift1_bag.png",
+        "rect": [
+          186,
+          20,
+          280,
+          81
+        ]
+      },
+      {
+        "name": "quantity",
+        "file": "gift1_quantity.png",
+        "rect": [
+          1471,
+          871,
+          1600,
+          900
+        ]
+      },
+      {
+        "name": "give",
+        "file": "gift1_give.png",
+        "rect": [
+          1507,
+          993,
+          1574,
+          1025
+        ]
+      }
+    ],
+    "gift2": [
+      {
+        "name": "title",
+        "file": "gift2_title.png",
+        "rect": [
+          877,
+          385,
+          1032,
+          420
+        ]
+      },
+      {
+        "name": "question",
+        "file": "gift2_question.png",
+        "rect": [
+          817,
+          473,
+          1108,
+          500
+        ]
+      },
+      {
+        "name": "confirm",
+        "file": "gift2_confirm.png",
+        "rect": [
+          1078,
+          874,
+          1143,
+          904
+        ]
+      }
+    ],
+    "giving": [
+      {
+        "name": "orange_icon",
+        "file": "giving_orange_icon.png",
+        "rect": [
+          1299,
+          109,
+          1348,
+          167
+        ]
+      }
+    ],
+    "idle_icon": [
+      {
+        "name": "normal_icon",
+        "file": "idle_icon_normal_icon.png",
+        "rect": [
+          1299,
+          109,
+          1348,
+          167
+        ]
+      }
+    ]
+  }
+}
