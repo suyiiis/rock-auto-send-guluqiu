@@ -11,5 +11,6 @@
     "monitor_keyboard": false
   },
   "save_live_trace": false,
-  "gift_selection": "current"
+  "ball_index": 1,
+  "gift_count": 1
 }

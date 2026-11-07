@@ -8,6 +8,15 @@ from paths import RESOURCE_ROOT as PROJECT_ROOT
 BASE_SIZE=(1920,1080)
 # Shared by every image/template acceptance check, including F-key labels.
 SIMILARITY_THRESHOLD=0.65
+# Gift1 backpack layout, measured in the 1920x1080 normalized frame.
+# Ball slots form a 6-column grid (two visible rows); quantity plus/minus
+# buttons sit beside the count slider. All offsets follow the matched
+# "give" button anchor, so a slightly shifted UI is still tracked.
+GIFT1_GIVE_CENTER=(1540.5,1009.0)
+GIFT1_BALL_COLUMNS=(314,462,610,758,906,1054)
+GIFT1_BALL_ROWS=(204,352)
+GIFT1_PLUS=(1752,928)
+GIFT1_MINUS=(1310,928)
 
 
 class Detector:
@@ -108,6 +117,16 @@ class Detector:
         color='orange' if warm>=.75 and black<.15 else 'normal' if black>=.80 and warm<.10 else 'unknown'
         return color,{'orange_fraction':warm,'dark_fraction':black}
 
+    def _gift1_layout(self,result,give_cx,give_cy):
+        """Emit ball-slot, plus and minus click points in the 2048x1152 frame."""
+        dx,dy=give_cx-GIFT1_GIVE_CENTER[0],give_cy-GIFT1_GIVE_CENTER[1]
+        scale_x,scale_y=2048/1920,1152/1080
+        slots=[[(cx+dx)*scale_x,(ry+dy)*scale_y]
+               for ry in GIFT1_BALL_ROWS for cx in GIFT1_BALL_COLUMNS]
+        result['buttons']['ball_slots']=slots
+        result['buttons']['plus']=[(GIFT1_PLUS[0]+dx)*scale_x,(GIFT1_PLUS[1]+dy)*scale_y]
+        result['buttons']['minus']=[(GIFT1_MINUS[0]+dx)*scale_x,(GIFT1_MINUS[1]+dy)*scale_y]
+
     def analyze(self,frame):
         result={'state':'unknown','scores':{},'anchors':{},'buttons':{},'icon_color':'unknown','gift_key':None,
                 'similarity_threshold':SIMILARITY_THRESHOLD}
@@ -140,7 +159,10 @@ class Detector:
             target=None
         if target:
             x,y,w,h=boxes[target]
-            result['buttons'][target[1]]=[(x+w/2)*2048/1920,(y+h/2)*1152/1080]
+            cx,cy=x+w/2,y+h/2
+            result['buttons'][target[1]]=[cx*2048/1920,cy*1152/1080]
+            if target==('gift1','give'):
+                self._gift1_layout(result,cx,cy)
             return result
         if max(scores['gift1'],scores['gift2'])>SIMILARITY_THRESHOLD:
             return result

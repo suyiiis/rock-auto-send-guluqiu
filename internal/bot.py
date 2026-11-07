@@ -33,8 +33,11 @@ def read_config(path):
             raise ValueError(f'{key} 必须在 {lo} 到 {hi} 之间，或留空自动选择')
     # Retire old docking/topmost preferences when loading an existing data folder.
     config.pop('sidebar',None)
-    if config.get('gift_selection')!='current':
-        raise ValueError('本脚本沿用游戏当前选择，不调整球种或数量')
+    config.pop('gift_selection',None)  # 老版本字段：现在始终自动选球
+    for key,lo,hi in (('ball_index',1,12),('gift_count',1,999)):
+        value=config.get(key,1)
+        if type(value) is not int or not lo<=value<=hi:
+            raise ValueError(f'{key} 必须为 {lo} 到 {hi} 的整数')
     return config
 
 
@@ -77,7 +80,8 @@ def run_loop(config,game,session,*,detector=None,clock=time.monotonic):
     pause_reason=''
     apply_input_settings(game,config,session)
     game.cancel_check=lambda: session.interrupt_pending() or not active
-    logging.info('已绑定 %s；沿用游戏当前选中的球和数量；切回游戏并保持前台3秒后开始。',game.title)
+    logging.info('已绑定 %s；每轮自动选择第 %d 个球，赠送数量 %d。',game.title,
+                 config.get('ball_index',1),config.get('gift_count',1))
     logging.info('使用侧栏暂停/继续/停止。赠送3无超时，只有橙色图标恢复普通色并确认准备2才计数。')
     while True:
         progress(mode='running' if active else 'countdown' if countdown else 'paused',phase=controller.phase,
