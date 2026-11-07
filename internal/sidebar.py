@@ -57,6 +57,8 @@ class Sidebar:
         root.protocol('WM_DELETE_WINDOW',self.close)
         if (RESOURCE_ROOT/'assets/app.ico').exists(): root.iconbitmap(str(RESOURCE_ROOT/'assets/app.ico'))
         self.rounds=tk.StringVar(value=str(self.config['max_rounds']))
+        self.ball_index=tk.StringVar(value=str(self.config.get('ball_index',1)))
+        self.gift_count=tk.StringVar(value=str(self.config.get('gift_count',1)))
         self.window_choice=tk.StringVar()
         self.mode_text=tk.StringVar(value='待机')
         self.phase_text=tk.StringVar(value='可以开始')
@@ -132,6 +134,23 @@ class Sidebar:
                                    disabledbackground=FIELD,disabledforeground=MUTED,width=12)
         self.rounds_entry.pack(fill='x',ipady=8)
         self.rounds_entry.bind('<Return>',lambda _e:self.primary())
+        self.label(settings,'球编号为背包第 1~12 个球（从左到右、从上到下）',size=9,color=MUTED,anchor='w').pack(fill='x')
+        detail=tk.Frame(settings,bg=BG)
+        detail.pack(fill='x',pady=(7,0))
+        detail.columnconfigure(1,weight=1)
+        detail.columnconfigure(3,weight=1)
+        self.label(detail,'球编号',size=9,color=MUTED).grid(row=0,column=0,sticky='w')
+        self.ball_entry=tk.Entry(detail,textvariable=self.ball_index,bg=FIELD,fg=TEXT,insertbackground=GREEN,
+                                 relief='flat',bd=0,font=('Microsoft YaHei UI',13),justify='center',
+                                 disabledbackground=FIELD,disabledforeground=MUTED,width=6)
+        self.ball_entry.grid(row=0,column=1,sticky='ew',padx=(6,14),ipady=5)
+        self.label(detail,'赠送数量',size=9,color=MUTED).grid(row=0,column=2,sticky='w')
+        self.count_entry=tk.Entry(detail,textvariable=self.gift_count,bg=FIELD,fg=TEXT,insertbackground=GREEN,
+                                  relief='flat',bd=0,font=('Microsoft YaHei UI',13),justify='center',
+                                  disabledbackground=FIELD,disabledforeground=MUTED,width=6)
+        self.count_entry.grid(row=0,column=3,sticky='ew',padx=(6,0),ipady=5)
+        self.ball_entry.bind('<Return>',lambda _e:self.primary())
+        self.count_entry.bind('<Return>',lambda _e:self.primary())
         controls=tk.Frame(self.body,bg=BG)
         controls.pack(fill='x')
         controls.columnconfigure(0,weight=2)
@@ -260,12 +279,13 @@ class Sidebar:
         else: self.start()
 
     def start(self):
-        try: self.config=save_config(updated_config(self.config,{'max_rounds':self.rounds.get()}))
-        except (ValueError,TypeError):
-            self.notice.set('请输入 0 或正整数')
+        try: self.config=save_config(updated_config(self.config,{'max_rounds':self.rounds.get(),
+                'ball_index':self.ball_index.get(),'gift_count':self.gift_count.get()}))
+        except (ValueError,TypeError) as exc:
+            self.notice.set(str(exc) or '请输入有效数字')
             return
         except Exception:
-            self.notice.set('次数保存失败，请重试')
+            self.notice.set('配置保存失败，请重试')
             return
         self.refresh_windows()
         if not self._hwnd:
@@ -335,6 +355,8 @@ class Sidebar:
         self.primary_button.configure(state='disabled' if self.session.stopping and running else 'normal')
         self.stop_button.configure(state='normal' if running else 'disabled')
         self.rounds_entry.configure(state='disabled' if running else 'normal')
+        self.ball_entry.configure(state='disabled' if running else 'normal')
+        self.count_entry.configure(state='disabled' if running else 'normal')
         self.window_box.configure(state='disabled' if running else 'readonly')
         if mode!=previous_mode and mode in {'running','stopped','complete'}: self.notice.set('')
         if mode in {'error','paused'}: self.log_button.pack(fill='x',pady=(8,0))

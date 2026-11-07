@@ -20,7 +20,7 @@ def write_json(path, value):
 
 def updated_config(original, values):
     config = copy.deepcopy(original)
-    ints = {"max_rounds", "stable_frames"}
+    ints = {"max_rounds", "stable_frames", "ball_index", "gift_count"}
     floats = {"poll_seconds", "key_hold_seconds", "transition_timeout_seconds"}
     for key in ints | floats:
         if key in values:
@@ -28,6 +28,7 @@ def updated_config(original, values):
                 config[key] = int(str(values[key])) if key in ints else float(values[key])
             except (TypeError, ValueError):
                 raise ValueError(f"{key} 请输入有效数字") from None
+    config.pop("gift_selection", None)
     for name in ("keyboard_id", "mouse_id"):
         if name in values:
             value = str(values[name]).strip()

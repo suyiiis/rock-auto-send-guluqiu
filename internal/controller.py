@@ -29,6 +29,37 @@ class Controller:
         self.rounds = 0
         self.orange_seen = False
         self.last_completion = None
+        self.select_mode = True  # Always pick the configured ball and count.
+        self.ball_index = config.get("ball_index", 1)
+        self.gift_count = config.get("gift_count", 1)
+        self._reset_gift1_selection()
+
+    def _reset_gift1_selection(self):
+        self.gift1_stage = "ball"
+        self.gift1_plus = 0
+
+    def _gift1_selection_step(self, observation):
+        """Select mode inside gift1: click the ball, bump the count, then give."""
+        buttons = observation.get("buttons") or {}
+        if self.gift1_stage == "ball":
+            slots = buttons.get("ball_slots") or []
+            if not 1 <= self.ball_index <= len(slots):
+                return [Action("pause", f"未能定位第 {self.ball_index} 个球的格子，未发送输入。")]
+            self.gift1_stage = "settle"
+            return [Action("click", slots[self.ball_index - 1])]
+        if self.gift1_stage == "settle":
+            self.gift1_stage = "plus"
+            return []
+        if self.gift1_stage == "plus":
+            if self.gift1_plus < self.gift_count - 1:
+                plus = buttons.get("plus")
+                if plus is None:
+                    return [Action("pause", "未能定位数量加号按钮，数量未调整。")]
+                self.gift1_plus += 1
+                return [Action("click", plus)]
+            self.gift1_stage = "give"
+            return None
+        return None
 
     @property
     def label(self):
@@ -40,6 +71,7 @@ class Controller:
         self.since = now
         self.previous = None
         self.stable = 0
+        self._reset_gift1_selection()
 
     def input_failed(self, input_sent, now):
         if not input_sent:
@@ -61,6 +93,8 @@ class Controller:
                 self.since = now
                 if state == "giving":
                     self.orange_seen = True
+                if state == "gift1":
+                    self._reset_gift1_selection()
                 return [Action("transition_complete", self.phase)]
             if now-self.since > self.config["transition_timeout_seconds"]:
                 return [Action("pause", f"{self.label}超时；操作已发出，未重复发送。当前识别：{state}")]
@@ -75,6 +109,18 @@ class Controller:
                 self.phase = "done" if limit and self.rounds >= limit else "prepare2"
                 self.since = now
                 return [Action("round_complete", self.rounds)]
+            if ready and state == "unready" and self.orange_seen:
+                # Some gift animations fold the action page back to the main
+                # HUD before prepare2 can hold for three frames. The orange
+                # icon was already confirmed, so count the round and restart
+                # the loop from the main screen.
+                self.rounds += 1
+                self.orange_seen = False
+                self.last_completion = now
+                limit = self.config["max_rounds"]
+                self.phase = "done" if limit and self.rounds >= limit else "unready"
+                self.since = now
+                return [Action("round_complete", self.rounds)]
             if ready and state not in {"giving", "prepare2", "unknown"}:
                 return [Action("pause", f"赠送等待中出现意外界面 {state}，未计为完成。")]
             return []
@@ -83,8 +129,14 @@ class Controller:
                 self.phase = state
                 self.orange_seen = state == "giving"
                 self.since = now
+                if state == "gift1":
+                    self._reset_gift1_selection()
                 return [Action("transition_complete", state)]
         elif ready and state == self.phase:
+            if self.phase == "gift1" and self.select_mode:
+                staged = self._gift1_selection_step(observation)
+                if staged is not None:
+                    return staged
             target, kind, value = self.TRANSITIONS[self.phase]
             if value == 'gift_key':
                 value=observation.get('gift_key')
